@@ -45,13 +45,13 @@ Dowload the Zip file and easily connect it to your WhatsApp account by pair code
 
 
 For further customization and setup guidance, click the button below:
+## REACH OUT FOR DEVELOPER 
 
 <div align="center">
   <a href="https://wa.me/256783991705?text=%3E%20Hello,%20Mega𓃵" target="_blank">
     <img src="https://img.shields.io/badge/Contact%20Me-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp Contact"/>
   </a>
 </div>
-
 
 ### Deploy on VPS
 
