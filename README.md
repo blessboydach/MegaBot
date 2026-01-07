@@ -27,7 +27,7 @@ A Mega Wha bot built using the Baileys library for group management, including f
 
 ### Step 1: Fork the Repository
 
-Click the button below to fork the Knight Bot repository to your GitHub account:
+Click the button below to fork the Mega Bot repository to your GitHub account:
 
 <div align="center">
   <a href="https://github.com/LORDMEGA-MD/MegaBot/fork">
