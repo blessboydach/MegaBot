@@ -9,7 +9,7 @@ A Mega Wha bot built using the Baileys library for group management, including f
 </div> 
 
 <div align="center"> 
-  <a href="https://youtube.com/@mr_unique_hacker"> 
+  <a href="https://wa.me/256783991705?text=%3E%20Hello,%20Mega𓃵"> 
     <img src="https://github.com/LORDMEGA-MD/MegaBot/blob/main/assets/bot_image.jpg" alt="Mega Bot" height="300"> 
   </a> 
 </div>
@@ -37,33 +37,21 @@ Click the button below to fork the Mega Bot repository to your GitHub account:
 
 ---
 
-### Step 2: Get Pair Code
+### Step 2: Get Zip
 
-Deploy the bot and easily connect it to your WhatsApp account by pair code. Click the button below to deploy the bot on Replit.
-
-<div align="center">
-  <a href="https://knight-bot-paircode.onrender.com" target="_blank">
-    <img src="https://img.shields.io/badge/GET%20PAIR%20CODE-Easy%20Method-ff4d4d?style=for-the-badge" alt="Generate Pair Code"/>
-  </a>
-</div>
+Dowload the Zip file and easily connect it to your WhatsApp account by pair code from your panel or VPS. Click the button below to deploy the bot on Replit.
 
 
-### After getting creds.json file, upload it to session folder
 
----
-
-### Step 3: Deploy Now
 
 For further customization and setup guidance, click the button below:
 
 <div align="center">
-  <a href="https://youtu.be/-oz_u1iMgf8">
-    <img src="https://img.shields.io/badge/Deploy Tutorial-dc3545?style=for-the-badge&logo=youtube" alt="YouTube Link"/>
-  </a>
-  <a href="https://bot-hosting.net/?aff=1068419752923508776">
-    <img src="https://img.shields.io/badge/Deploy on Panel-28a745?style=for-the-badge" alt="Deploy on Panel"/>
+  <a href="https://wa.me/256783991705?text=%3E%20Hello,%20Mega𓃵" target="_blank">
+    <img src="https://img.shields.io/badge/Contact%20Me-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp Contact"/>
   </a>
 </div>
+
 
 ### Deploy on VPS
 
