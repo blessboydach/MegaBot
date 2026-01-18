@@ -410,19 +410,40 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 }
                 await banCommand(sock, chatId, message);
                 break;
-            //sticker
-        
-        sock.ev.on('messages.upsert', async ({ messages }) => {
-    const msg = messages[0];
-    if (!msg?.message) return;
 
-    // 🔥 THIS LINE IS REQUIRED
-    await AntiSticker(msg, sock);
+                //===========
+                              //stcker
+                case userMessage.startsWith('.antisticker'):
+    if (!isGroup) {
+        await sock.sendMessage(chatId, {
+            text: 'This command can only be used in groups.',
+            ...channelInfo
+        }, { quoted: message });
+        return;
+    }
 
-    // rest of your handler...
-});
-       //sticker
-                break;
+    if (!isBotAdmin) {
+        await sock.sendMessage(chatId, {
+            text: 'Please make the bot an admin first.',
+            ...channelInfo
+        }, { quoted: message });
+        return;
+    }
+
+    const reply = await handleAntiStickerCommand(
+        chatId,
+        senderId,
+        userMessage.replace('.antisticker', '').trim(),
+        sock
+    );
+
+    if (reply) {
+        await sock.sendMessage(chatId, {
+            text: reply,
+            ...channelInfo
+        }, { quoted: message });
+    }
+    break;
             case userMessage.startsWith('.unban'):
                 if (!isGroup) {
                     if (!message.key.fromMe && !senderIsSudo) {
