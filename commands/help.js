@@ -52,6 +52,7 @@ async function helpCommand(sock, chatId, message) {
 ║ ➤                       ɹǝsn@ ʞɔᴉʞ.⇦
 ║ ➤              ɹǝsn@ sƃuᴉuɹɐʍ.⇦
 ║ ➤                     ɹǝsn@ uɹɐʍ.⇦
+║ ➤                        ɹǝʞɔᴉʇsᴉʇuɐ.⇦
 ║ ➤                             ʞuᴉןᴉʇuɐ.⇦
 ║ ➤                    pɹoʍpɐqᴉʇuɐ.⇦
 ║ ➤                                 ɹɐǝןɔ.⇦
