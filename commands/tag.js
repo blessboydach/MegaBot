@@ -1,4 +1,4 @@
-const isAdmin = require('../lib/isAdmin');
+const isOwner = require('../lib/isOwner');
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 const fs = require('fs');
 const path = require('path');
@@ -15,15 +15,10 @@ async function downloadMediaMessage(message, mediaType) {
 }
 
 async function tagCommand(sock, chatId, senderId, messageText, replyMessage, message) {
-    const { isSenderAdmin, isBotAdmin } = await isAdmin(sock, chatId, senderId);
 
-    if (!isBotAdmin) {
-        await sock.sendMessage(chatId, { text: 'Please make the bot an admin first.' }, { quoted: message });
-        return;
-    }
-
-    if (!isSenderAdmin) {
-        const stickerPath = './assets/sticktag.webp';  // Path to your sticker
+    // Owner check only
+    if (!isOwner(senderId)) {
+        const stickerPath = './assets/sticktag.webp';
         if (fs.existsSync(stickerPath)) {
             const stickerBuffer = fs.readFileSync(stickerPath);
             await sock.sendMessage(chatId, { sticker: stickerBuffer }, { quoted: message });
@@ -38,7 +33,7 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
     if (replyMessage) {
         let messageContent = {};
 
-        // Handle image messages
+        // Image
         if (replyMessage.imageMessage) {
             const filePath = await downloadMediaMessage(replyMessage.imageMessage, 'image');
             messageContent = {
@@ -47,7 +42,7 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
                 mentions: mentionedJidList
             };
         }
-        // Handle video messages
+        // Video
         else if (replyMessage.videoMessage) {
             const filePath = await downloadMediaMessage(replyMessage.videoMessage, 'video');
             messageContent = {
@@ -56,14 +51,14 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
                 mentions: mentionedJidList
             };
         }
-        // Handle text messages
+        // Text
         else if (replyMessage.conversation || replyMessage.extendedTextMessage) {
             messageContent = {
                 text: replyMessage.conversation || replyMessage.extendedTextMessage.text,
                 mentions: mentionedJidList
             };
         }
-        // Handle document messages
+        // Document
         else if (replyMessage.documentMessage) {
             const filePath = await downloadMediaMessage(replyMessage.documentMessage, 'document');
             messageContent = {

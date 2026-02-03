@@ -1,17 +1,14 @@
-const isAdmin = require('../lib/isAdmin');  // Move isAdmin to helpers
+const isOwner = require('../lib/isOwner');
 
 async function tagAllCommand(sock, chatId, senderId, message) {
     try {
-        const { isSenderAdmin, isBotAdmin } = await isAdmin(sock, chatId, senderId);
-        
-
-        if (!isBotAdmin) {
-            await sock.sendMessage(chatId, { text: 'Please make the bot an admin first.' }, { quoted: message });
-            return;
-        }
-
-        if (!isSenderAdmin) {
-            await sock.sendMessage(chatId, { text: 'Only group admins can use the .tagall command.' }, { quoted: message });
+        // Owner check only
+        if (!isOwner(senderId)) {
+            await sock.sendMessage(
+                chatId,
+                { text: 'Only the bot owner can use the .tagall command.' },
+                { quoted: message }
+            );
             return;
         }
 
@@ -27,7 +24,7 @@ async function tagAllCommand(sock, chatId, senderId, message) {
         // Create message with each member on a new line
         let messageText = '🔊 *Hello Everyone:*\n\n';
         participants.forEach(participant => {
-            messageText += `@${participant.id.split('@')[0]}\n`; // Add \n for new line
+            messageText += `@${participant.id.split('@')[0]}\n`;
         });
 
         // Send message with mentions
@@ -42,4 +39,4 @@ async function tagAllCommand(sock, chatId, senderId, message) {
     }
 }
 
-module.exports = tagAllCommand;  // Export directly
+module.exports = tagAllCommand;
