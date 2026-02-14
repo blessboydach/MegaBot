@@ -2,27 +2,25 @@ const { jidNormalizedUser } = require('@whiskeysockets/baileys');
 
 async function megaTagCommand(sock, chatId, senderId, userMessage, message) {
     try {
-
+        // ❌ Block group usage
         if (chatId.endsWith('@g.us')) {
             return sock.sendMessage(chatId, {
-                text: "> MF please Use this command in bots DM🙏."
+                text: "> MF please use this command in bot DM only 🙏."
             }, { quoted: message });
         }
 
         let content = userMessage.replace('.megatag', '').trim();
 
-        // -------- Extract Group From JID --------
+        // -------- Extract Group From JID or Link --------
         let groupId = null;
 
-        const groupMatch = content.match(/\d+@g\.us/);
-        if (groupMatch) {
-            groupId = groupMatch[0];
+        const jidMatch = content.match(/\d+@g\.us/);
+        if (jidMatch) {
+            groupId = jidMatch[0];
             content = content.replace(groupId, '').trim();
         }
 
-        // -------- Extract Group From Link --------
         const inviteMatch = content.match(/chat\.whatsapp\.com\/([\w\d]+)/);
-
         if (inviteMatch) {
             try {
                 groupId = await sock.groupAcceptInvite(inviteMatch[1]);
@@ -36,59 +34,83 @@ async function megaTagCommand(sock, chatId, senderId, userMessage, message) {
 
         if (!groupId) {
             return sock.sendMessage(chatId, {
-                text: "> Provide group link or group JID."
+                text: "> Provide a group link or group JID."
             }, { quoted: message });
         }
 
-        // -------- Detect All Phone Numbers --------
+        // -------- Detect Numbers (Optional) --------
         const numberRegex = /\+?\d[\d\s]{7,18}\d/g;
         const foundNumbers = content.match(numberRegex) || [];
-
-        if (!foundNumbers.length) {
-            return sock.sendMessage(chatId, {
-                text: "> No valid numbers found."
-            }, { quoted: message });
-        }
-
         let finalText = content;
         let numbers = [];
 
-        // Inline replace numbers
         for (let rawNum of foundNumbers) {
-
             const cleanNum = rawNum.replace(/\D/g, '');
-
             if (cleanNum.length < 9 || cleanNum.length > 15) continue;
-
             numbers.push(cleanNum);
-
             finalText = finalText.replace(rawNum, `@${cleanNum}`);
         }
 
         numbers = [...new Set(numbers)];
+        const targetJids = numbers.map(num => jidNormalizedUser(num + "@s.whatsapp.net"));
 
-        // Convert numbers → JIDs
-        const targetJids = numbers.map(num =>
-            jidNormalizedUser(num + "@s.whatsapp.net")
-        );
-
-        // -------- Hidetag Everyone --------
+        // -------- Fetch Group Participants for hidetag --------
         const groupMeta = await sock.groupMetadata(groupId);
         const participants = groupMeta.participants.map(p => p.id);
 
-        await sock.sendMessage(groupId, {
-            text: finalText,
-            mentions: [...participants, ...targetJids]
-        });
+        // -------- Check for Replied Message (Media or Sticker) --------
+        const quoted = message?.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+
+        if (quoted) {
+            const typeMap = {
+                stickerMessage: 'sticker',
+                imageMessage: 'image',
+                videoMessage: 'video',
+                audioMessage: 'audio',
+                documentMessage: 'document'
+            };
+
+            const msgType = Object.keys(quoted)[0];
+            const sendType = typeMap[msgType];
+
+            if (!sendType) {
+                return sock.sendMessage(chatId, {
+                    text: "> Unsupported media type."
+                }, { quoted: message });
+            }
+
+            const mediaContent = quoted[msgType];
+
+            // Send media to group with hidetag mentions
+            await sock.sendMessage(groupId, {
+                [sendType]: mediaContent,
+                mentions: [...participants, ...targetJids]
+            });
+
+            // Also send text if user typed extra text
+            if (finalText) {
+                await sock.sendMessage(groupId, {
+                    text: finalText,
+                    mentions: [...participants, ...targetJids]
+                });
+            }
+
+        } else {
+            // Normal text-only megatag
+            await sock.sendMessage(groupId, {
+                text: finalText || "> ",
+                mentions: [...participants, ...targetJids]
+            });
+        }
 
         await sock.sendMessage(chatId, {
             text: `> ✅ Megatag sent to ${numbers.length} user(s).`
         });
 
     } catch (err) {
-        console.log(err);
+        console.log("MEGATAG ERROR:", err);
         await sock.sendMessage(chatId, {
-            text: "> Failed to send megatag."
+            text: `> Failed to send megatag.\n${err.message}`
         }, { quoted: message });
     }
 }
